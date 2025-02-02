@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: cursos-app-deployment
 spec:
-  replicas: 1  # Defina o número de réplicas desejado
+  replicas: 1
   selector:
     matchLabels:
       app: cursos-app
@@ -14,16 +14,22 @@ spec:
     spec:
       containers:
         - name: cursos-app
-          image: coelhos-gabi/cursos-app:latest  # Substitua pelo nome da sua imagem Docker
+          image: coelhosgabi/cursos-app:latest
           ports:
             - containerPort: 8080
           env:
-            - name: SPRING_DATASOURCE_URL
-              value: "jdbc:mysql://mysql-service:3306/cursos_db"  # Nome do serviço MySQL no Kubernetes
             - name: SPRING_DATASOURCE_USERNAME
-              value: "usuario"
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: SPRING_DATASOURCE_USERNAME
             - name: SPRING_DATASOURCE_PASSWORD
-              value: "senha"
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: SPRING_DATASOURCE_PASSWORD
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:mysql://mysql-service:3306/mysql"
           resources:
             limits:
               memory: "512Mi"

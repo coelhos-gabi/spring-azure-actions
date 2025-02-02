@@ -11,6 +11,7 @@ COPY --from=build /app/target/cursos-*.jar /app/java-application.jar
 WORKDIR /app
 RUN addgroup --system cursos-app && useradd -r cursos-app -g cursos-app
 RUN chown -R cursos-app:cursos-app /app
-USER cursos-app
+USER root
 EXPOSE 8080
-CMD "dumb-init" "java" "-jar" "java-application.jar"
+
+ENTRYPOINT ["dumb-init", "java", "-jar", "java-application.jar"]
